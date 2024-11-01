@@ -9,11 +9,28 @@
     <h1>Calculadora AJAX</h1>
 
     <pre>
-    <label>Numero 01</label>
-    <input type="text" name="numero1" id="numero1"/>
+    <fieldset>
+        <legend>Área cômodo</legend>
 
-    <label>Numero 02</label>
-    <input type="text" name="numero2" id="numero2"/>
+    <label>Largura (m²)</label>
+    <input type="number" name="larguraComodo" id="larguraComodo"/>
+
+    <label>Comprimento (m²)</label>
+    <input type="number" name="comprimentoComodo" id="comprimentoComodo"/>
+    </fieldset>
+
+    <fieldset>
+        <legend>Tamanho Piso/Azuleijo</legend>
+
+    <label>Largura (m²)</label>
+    <input type="number" name="larguraPiso" id="larguraPiso"/>
+
+    <label>Comprimento (m²)</label>
+    <input type="number" name="comprimentoPiso" id="comprimentoPiso"/>
+    </fieldset>
+
+    <label>Margem de erro (%)</label>
+    <input type="number" name="margem" id="margem"/>
 
     <button onclick="calcular();">Calcular com ajax</button>
 
@@ -21,22 +38,36 @@
     </pre>
     <script>
         function calcular(){
-            const numero1 = document.getElementById("numero1").value;
-            const numero2 = document.getElementById("numero2").value;
+            const larguraComodo = document.getElementById("larguraComodo").value;
+            const comprimentoComodo = document.getElementById("comprimentoComodo").value;
+            const larguraPiso = document.getElementById("larguraPiso").value;
+            const comprimentoPiso = document.getElementById("comprimentoPiso").value;
+            const margem = document.getElementById("margem").value;
 
+            const medidas = {
+                larguraComodo,
+                comprimentoComodo,
+                larguraPiso,
+                comprimentoPiso,
+                margem
+            };
+
+            const json = JSON.stringify(medidas);
+                       
             fetch('/calculo.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    numero1: parseFloat(numero1),
-                    numero2: parseFloat(numero2)                
-                })
+                body: json
             })
             .then(resposta => resposta.json())
             .then(dados =>{
-
+               
                 document.getElementById("resultado").innerHTML = 
-                    "Soma: " + dados.soma;
+                   "areaComodo: " + dados.areaComodo +
+                      "areaPiso: " + dados.areaPiso +
+                      "quantidade: " + dados.quantidade +
+                      "margem: " + dados.margem +
+                      "total: " + dados.total;
             })
             .catch(erro =>{
                 document.getElementById("resultado").innerHTML = 
